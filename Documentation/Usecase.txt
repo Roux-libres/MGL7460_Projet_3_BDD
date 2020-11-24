@@ -1,4 +1,5 @@
 Utilisateur:
+    - Pouvoir créer un compte pour se connecter au système grâce à un utilisateur et un mot de passe
     - Pouvoir se connecter au système avec user/mdp
     - Stocker les identifiants
     - Stocker l'historique des 5 dernières requêtes avec les infos (Type requete, paramètre, date, ...)
