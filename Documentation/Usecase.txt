@@ -17,8 +17,3 @@ Asteroid :
     - Récupérer les infos des atéroides proches pour un jour
     - Afficher un graph avec la terre et les astéroides
     - (OPT)Stocker le graph pour un jour
-
-
-
-
-
