@@ -1,14 +1,13 @@
 Utilisateur:
-    -Pouvoir se connecter au système avec user/mdp
-    -Stocker les identifiants
-    -Stocker l'historique des 5 dernières requêtes avec les infos (Type requete, paramètre, date, ...)
-    -Utiliser les 5 dernières requêtes
-    -Afficher la liste des images mises en favori
-
+    - Pouvoir se connecter au système avec user/mdp
+    - Stocker les identifiants
+    - Stocker l'historique des 5 dernières requêtes avec les infos (Type requete, paramètre, date, ...)
+    - Utiliser les 5 dernières requêtes
 
 APOD: 
     - Visualiser image du jour
     - Pouvoir ajouter l'image en favori et la stocker
+    - Afficher la liste des images mises en favori
 
 Earth:
     - Rentrer des coordonnées gps
