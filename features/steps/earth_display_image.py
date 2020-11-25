@@ -7,14 +7,14 @@ from behave import *
 
 
 #SCENARIO: A user wants a 2D graph to be displayed
-@given('the user wants a graph of the asteroids data')
+@given('the user wants the Earth image of a location')
 def step_impl(context):
     pass
 
-@when('the user types a valid date')
+@when('the user types valid coordinates')
 def step_impl(context):
     pass
 
-@then('the graph is displayed')
+@then('the image of the location is displayed on the web browser')
 def step_impl(context):
     pass
