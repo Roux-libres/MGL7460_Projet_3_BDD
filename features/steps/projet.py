@@ -1,8 +1,10 @@
 from behave import *
 
+
+
 @given('we have behave installed')
 def step_impl(context):
-    print("we have behave installed")
+    pass
 
 @when('we implement a test')
 def step_impl(context):

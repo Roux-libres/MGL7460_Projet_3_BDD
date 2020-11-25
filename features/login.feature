@@ -1,6 +1,6 @@
-Feature: User try to log in
+Feature: User login
 
-    Scenario: A user try to log in
+    Scenario: A user logs in
         Given the user has an account registered
          When the user logs in with his valid credentials
          Then the user is logged in

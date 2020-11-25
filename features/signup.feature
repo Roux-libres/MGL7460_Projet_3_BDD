@@ -1,13 +1,11 @@
-Feature: user registration
+Feature: User registration
 
-    Scenario: Successful sign up
-        Given The user choose to sign up
-        When The user writes a correct username
-        And The user write a correct password
-        Then the user account is created
-        And a confirmation message is displayed
+    Scenario: A user successfuly sign up
+        Given the user has no account registered
+         When the user sign up with valid credentials
+         Then the user account is created
 
-    Scenario: Duplicate username
-        Given The user choose to sign up
-        When The user writes a username that has already regestired
-        Then an error message is displayed
+    Scenario: A user try to sign up but username is already taken
+        Given the user has no account registered
+         When the user sign up with an already taken username
+         Then the user is told to choose another username
