@@ -1,31 +1,33 @@
+#pylint: disable=undefined-variable
+#pylint: disable=function-redefined
+#pylint: disable=unused-wildcard-import
+
 from behave import *
 
-#Scenario : Successful sign up
-@given('The user choose to sign up')
-def step_impl(context):
-    assert True is not False
 
-@when('The user writes a correct username')
-def step_impl(context):
-    assert True is not False
 
-@when('The user write a correct password"')
+#SCENARIO: A user successfuly sign up
+@given('the user has no account registered')
 def step_impl(context):
-    assert True is not False
+    pass
+
+@when('the user sign up with valid credentials')
+def step_impl(context):
+    pass
 
 @then('the user account is created')
 def step_impl(context):
-    assert True is not False
+    pass
 
-@then('a confirmation message is displayed')
+#SCENARIO: A user try to sign up but username is already taken
+@given('the user has no account registered')
 def step_impl(context):
-    assert True is not False
+    pass
 
-#Scenario : Duplicate username
-@when('The user writes a username that has already regestired')
+@when('the user sign up with an already taken username')
 def step_impl(context):
-    assert True is not False
+    pass
 
-@then('an error message is displayed')
+@then('the user is told to choose another username')
 def step_impl(context):
-    assert True is not False
+    pass
