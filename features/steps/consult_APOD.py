@@ -1,5 +1,9 @@
 from behave import *
 
+#pylint: disable=undefined-variable
+#pylint: disable=function-redefined
+#pylint: disable=unused-wildcard-import
+
 @given('the name of the APOD is displayed in prompt')
 def step_impl(context):
     print("we have behave installed")

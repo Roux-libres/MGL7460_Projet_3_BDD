@@ -1,10 +1,14 @@
 from behave import *
 
+#pylint: disable=undefined-variable
+#pylint: disable=function-redefined
+#pylint: disable=unused-wildcard-import
+
 @given('the APOD has been get')
 def step_impl(context):
     print("we have behave installed")
 
-@given('the user\'s favorites APOD are listed')
+@given('the user has favorites APOD')
 def step_impl(context):
     print("we have behave installed")
 
@@ -16,15 +20,15 @@ def step_impl(context):
 def step_impl(context):
     assert True is not False
     
-@when('the user select and remove an APOD from his favorites')
+@when('the user selects and chooses to remove an APOD from his favorites')
 def step_impl(context):
     assert True is not False
     
-@when('the user choose one APOD to display')
+@when('the user chooses one APOD to display')
 def step_impl(context):
     assert True is not False
 
-@when('the user choose to display all his favorites APOD')
+@when('the user chooses to display all his favorites APOD')
 def step_impl(context):
     assert True is not False    
 
