@@ -1,5 +1,6 @@
-#from peewee import SqliteDatabase
+from peewee import SqliteDatabase
 
+db = SqliteDatabase("nasa.db")
 class BaseModel:
-    def __init__(self):
-        self.database = None
+    class Meta:
+        database = db
