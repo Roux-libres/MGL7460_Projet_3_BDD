@@ -7,9 +7,8 @@ from behave import *
 
 
 #SCENARIO: A user successfuly sign up
-@given('the user has no account registered')
-def step_impl(context):
-    pass
+
+#given('the user has no account registered')
 
 @when('the user sign up with valid credentials')
 def step_impl(context):
@@ -20,9 +19,8 @@ def step_impl(context):
     pass
 
 #SCENARIO: A user try to sign up but username is already taken
-@given('the user has no account registered')
-def step_impl(context):
-    pass
+
+#given('the user has no account registered')
 
 @when('the user sign up with an already taken username')
 def step_impl(context):
