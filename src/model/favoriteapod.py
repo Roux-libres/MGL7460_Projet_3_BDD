@@ -1,12 +1,13 @@
-from basemodel import BaseModel
+import peewee
+
+from model.basemodel import BaseModel
+from model.user import User
 
 
 
 class FavoriteAPOD(BaseModel):
-    def __init__(self, database):
-        super().__init__(database)
-        self.id = None
-        self.user_id = None
-        self.name = None
-        self.date = None
-        self.url = None
+    id = peewee.AutoField()
+    user_id = peewee.ForeignKeyField(User)
+    name = peewee.TextField()
+    date = peewee.DateField()
+    url = peewee.TextField()

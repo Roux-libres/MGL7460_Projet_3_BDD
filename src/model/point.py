@@ -1,12 +1,13 @@
-from basemodel import BaseModel
+import peewee
+
+from model.basemodel import BaseModel
+from model.graphasteroid import GraphAsteroid
 
 
 
 class Point(BaseModel):
-    def __init__(self, database):
-        super().__init__(database)
-        self.id = None
-        self.graph_asteroid_id = None
-        self.x = None
-        self.y = None
-        self.radius = None
+    id = peewee.AutoField()
+    graph_asteroid_id = peewee.ForeignKeyField(GraphAsteroid)
+    x = peewee.IntegerField()
+    y = peewee.IntegerField()
+    radius = peewee.FloatField()

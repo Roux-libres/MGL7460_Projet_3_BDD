@@ -2,13 +2,22 @@
 #pylint: disable=function-redefined
 #pylint: disable=unused-wildcard-import
 
+import os
+import sys
+
 from behave import *
+
+src_abs_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), r"..\..\src")
+sys.path.append(src_abs_path)
+import sakado
 
 
 
 @given('the user is logged in')
 def step_impl(context):
-    pass
+    context.application = sakado.Sakado("database.db", database_path=src_abs_path)
+    context.application.dao
+    
 
 #SCENARIO: A user try to log in
 @given('the user has an account registered')

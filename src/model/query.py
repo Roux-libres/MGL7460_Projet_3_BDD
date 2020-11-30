@@ -1,11 +1,12 @@
-from basemodel import BaseModel
+import peewee
+
+from model.basemodel import BaseModel
+from model.user import User
 
 
 
 class Query(BaseModel):
-    def __init__(self, database):
-        super().__init__(database)
-        self.id = None
-        self.user_id = None
-        self.date = None
-        self.content = None
+    id = peewee.AutoField()
+    user_id = peewee.ForeignKeyField(User)
+    date = peewee.DateTimeField()
+    content = peewee.TextField()
