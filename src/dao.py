@@ -1,6 +1,9 @@
 from peewee import SqliteDatabase
 
 import model
+
+
+
 db = SqliteDatabase("nasa.db")
 
 class DAO:
@@ -26,9 +29,7 @@ class DAO:
         pass
 
     def get_graph(self, date):
-        return model.GraphAsteroid
+        return model.graphasteroid
 
     def get_graph_points(self, date):
         return list
-
-
