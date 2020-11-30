@@ -2,9 +2,9 @@ from basemodel import BaseModel
 
 
 
-class GraphAsteroid(BaseModel):
-    def __init__(self, db):
-        super().__init__(self, db)
+class FavoriteAPOD(BaseModel):
+    def __init__(self, database):
+        super().__init__(database)
         self.id = None
         self.user_id = None
         self.name = None

@@ -1,14 +1,10 @@
-from peewee import SqliteDatabase
-
 import model
 
 
 
-db = SqliteDatabase("nasa.db")
-
 class DAO:
-    def __init__(self):
-        pass
+    def __init__(self, database):
+        self.database = database
 
     def get_query_from_user(self, user, limit=5):
         return list

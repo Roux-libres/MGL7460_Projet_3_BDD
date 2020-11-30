@@ -2,15 +2,18 @@ import json
 import os
 import sys
 
+import peewee
+
+import dao
 import model
 
 
 
 class Sakado:
-    def __init__(self):
+    def __init__(self, database_name):
         self.logged_user = None
         self.api_key = None
-        self.dao = None
+        self.dao = dao.DAO(peewee.SqliteDatabase(database_name))
 
     def display_login_screen(self):
         pass
@@ -50,4 +53,7 @@ class Sakado:
 
     def display_queries(self):
         pass
-    
+
+if __name__ == "__main__":
+    database_name = "nasa.db"
+    application = Sakado(database_name)
