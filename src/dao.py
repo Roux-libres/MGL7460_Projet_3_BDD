@@ -1,10 +1,26 @@
+from playhouse.sqlite_ext import SqliteExtDatabase
+
 import model
 
 
 
 class DAO:
-    def __init__(self, database):
-        self.database = database
+    def __init__(self, database_name):
+        self.database = SqliteExtDatabase(database_name, 
+                                              pragmas = {
+                                                  'cache_size': -1 * 64000,
+                                                  'foreign_keys': 1})
+        
+        self.database.connection()
+        
+        tables_list = [
+                       model.favoriteapod.FavoriteAPOD,
+                       model.graphasteroid.GraphAsteroid,
+                       model.point.Point,
+                       model.query.Query,
+                       model.user.User
+        ]
+        self.database.create_tables(tables_list)
 
     def get_query_from_user(self, user, limit=5):
         return list

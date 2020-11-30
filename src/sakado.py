@@ -10,10 +10,15 @@ import model
 
 
 class Sakado:
-    def __init__(self, database_name):
+    def __init__(self, database_name, database_path=""):
         self.logged_user = None
-        self.api_key = None
-        self.dao = dao.DAO(peewee.SqliteDatabase(database_name))
+        self.api_key = "DEMO_KEY"
+        self.api_queries = {
+            "apod"      : "https://api.nasa.gov/planetary/apod?",
+            "asteroid"  : "https://api.nasa.gov/neo/rest/v1/feed?",
+            "earth"     : "https://api.nasa.gov/planetary/earth/imagery?"
+        }
+        self.dao = dao.DAO(os.path.join(database_path, database_name))
 
     def display_login_screen(self):
         pass
@@ -55,5 +60,6 @@ class Sakado:
         pass
 
 if __name__ == "__main__":
-    database_name = "nasa.db"
-    application = Sakado(database_name)
+    database_name = "database.db"
+    application = Sakado(database_name, database_path=os.path.abspath(os.path.dirname(__file__)))
+    
