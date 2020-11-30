@@ -7,16 +7,11 @@ import sys
 
 from behave import *
 
-src_abs_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), r"..\..\src")
-sys.path.append(src_abs_path)
-import sakado
-
 
 
 @given('the user is logged in')
 def step_impl(context):
-    context.application = sakado.Sakado("database.db", database_path=src_abs_path)
-    context.application.dao
+    assert context.application.api_key == "DEMO_KEY"
     
 
 #SCENARIO: A user try to log in
@@ -61,8 +56,8 @@ def step_impl(context):
 
 @when('the user logs in with invalid password')
 def step_impl(context):
-    pass
+    assert context.application.api_key == "DEMO_KEY"
 
 @then('the user is told to enter a valid password')
 def step_impl(context):
-    pass
+    assert context.failed is False
