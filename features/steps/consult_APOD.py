@@ -19,8 +19,7 @@ import model.favoriteapod
 @when('the user asks to see the APOD')
 def step_impl(context):    
     url = context.application.api_queries["apod"]
-    parameters = {"api_key": context.application.api_key}
-    data = context.application.fetch_data(url, parameters)
+    data = context.application.fetch_data(url, {})
     context.apod = model.favoriteapod.FavoriteAPOD()
     context.apod.name = data.title
     context.apod.date = data.date
