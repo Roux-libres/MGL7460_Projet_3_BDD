@@ -2,12 +2,16 @@
 #pylint: disable=function-redefined
 #pylint: disable=unused-wildcard-import
 
+import io
 import json
+import sys
+import os
 
 from behave import *
 
-sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), r"..\..\src"))
-import sakado
+src_abs_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), r"..\..\src")
+sys.path.append(src_abs_path)
+import model.favoriteapod
 
 #Given('the user is logged in')
 
@@ -17,10 +21,7 @@ def step_impl(context):
     context.stdout_mock = io.StringIO()
     sys.stdout = context.stdout_mock    
     
-    url = context.application.queries["apod"]
-    parameters = {"api_key" : context.application.api_key}
-    context.apod = FavoriteAPOD()
-    context.apod.user_id = context.application.logged_user.id
+    context.apod = model.favoriteapod.FavoriteAPOD()
     context.apod.name = "Cygnus Without Stars"
     context.apod.date = "2020-11-30"
     context.apod.url = "https://apod.nasa.gov/apod/image/2011/CygnusStarless_Cameron_8859.jpg"
@@ -28,11 +29,12 @@ def step_impl(context):
 @then('the name of the APOD is displayed')
 def step_impl(context):
     context.application.display_APOD(context.apod)
-    assert context.failed is False
+    output = context.stdout_mock.getvalue()
+    assert context.apod.name == output
     
 @then('the APOD is displayed in web browser')
 def step_impl(context):
-    assert context.failed is False
+    pass
     
     sys.stdout = context.real_stdout
     

@@ -47,6 +47,9 @@ class Sakado:
     def display_APOD_features(self):
         pass
 
+    def display_APOD(self, apod):
+        pass
+        
     def display_favorites_APOD(self):
         pass
 
