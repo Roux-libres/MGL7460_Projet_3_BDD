@@ -9,3 +9,9 @@ import sakado
 
 def before_all(context):
     context.application = sakado.Sakado("database.db", database_path=src_abs_path)
+    context.disposable = []
+
+def after_scenario(context, scenario):
+    for element in context.disposable:
+        element.delete_instance()
+        del element
