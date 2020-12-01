@@ -22,29 +22,37 @@ class DAO:
         ]
         self.database.create_tables(tables_list)
 
+    def store_user(self, username, password):
+        user = None
+        return user
+      
     def verify_user_credentials(self, username, password):
         return bool
     
+    def store_query(self, user, content):
+        query = None
+        return query
+    
     def get_query_from_user(self, user, limit=5):
         return list
-
-    def store_query(self, user, content):
-        return bool
     
-    def get_favorite_APOD_from_user(self, name, url):
+    def store_favorite_apod(self, user, apod_json):
+        favorite_apod = None
+        return favorite_apod
+
+    def get_favorites_apod(self, user):
         return list
-
-    def add_APOD_to_favorites(self, name, url):
-        return bool
     
-    def remove_APOD_to_favorites(self, apod):
+    def remove_favorite_apod(self, apod):
         return bool
 
     def store_graph(self, asteroid_json):
-        pass
+        graph_asteroid = None
+        return graph_asteroid
 
     def get_graph(self, date):
-        return model.graphasteroid
+        graph_asteroid = None
+        return graph_asteroid
 
     def get_graph_points(self, date):
         return list
