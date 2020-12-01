@@ -22,6 +22,9 @@ class DAO:
         ]
         self.database.create_tables(tables_list)
 
+    def verify_user_credentials(self, username, password):
+        return bool
+    
     def get_query_from_user(self, user, limit=5):
         return list
 

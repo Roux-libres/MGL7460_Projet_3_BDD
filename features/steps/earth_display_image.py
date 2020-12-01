@@ -29,5 +29,9 @@ def step_impl(context):
 
 @then('the image of the location is displayed on the web browser')
 def step_impl(context):
-    context.application.open_url_in_browser(context.earth_url)
-    assert context.failed is False
+    try:
+        context.application.open_url_in_browser(context.earth_url)
+    except webbrowser.Error as error:
+        print("Error during opening of url\nError : {}".format(error))
+        context.failure = True
+    assert context.failure is False

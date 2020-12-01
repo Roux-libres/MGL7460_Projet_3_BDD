@@ -7,35 +7,40 @@ import sys
 
 from behave import *
 
+src_abs_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), r"..\src")
+sys.path.append(src_abs_path)
+import model.user as user
+
 
 
 @given('the user is logged in')
 def step_impl(context):
-    assert context.application.api_key == "DEMO_KEY"
-    
+    context.username = "Bernard123"
+    context.password = "Tanpis321"
+    context.user = user.User.create(username=context.username, password=context.password)
+    context.disposable.append(context.user)
 
 #SCENARIO: A user try to log in
 @given('the user has an account registered')
 def step_impl(context):
-    """
     context.username = "Bernard123"
     context.password = "Tanpis321"
-    #START TRANSACTION
-    context.user = User(username=context.username, password=context.password)
-    context.user.save()
-    """
-    pass
+    context.user = user.User.create(username=context.username, password=context.password)
+    context.disposable.append(context.user)
 
 @when('the user logs in with his valid credentials')
 def step_impl(context):
-    #context.user.log_in(context.username, context.password)
-    pass
+    context.result_credentials = context.application.dao.verify_user_credentials(context.username, context.password)
+    if context.result_credentials == True:
+        context.application.logged_user = context.user
+        context.failure = False
+    else:
+        context.failure = True
 
 @then('the user is logged in')
 def step_impl(context):
-    #assert context.user != None
-    #ROLLBACK TRANSACTION
-    pass
+    assert context.application.logged_user == context.user
+    assert context.failure is False
 
 #SCENARIO: A user try to log in but he has no account
 @given('the user has no account registered')
@@ -56,8 +61,8 @@ def step_impl(context):
 
 @when('the user logs in with invalid password')
 def step_impl(context):
-    assert context.application.api_key == "DEMO_KEY"
+    pass
 
 @then('the user is told to enter a valid password')
 def step_impl(context):
-    assert context.failed is False
+    pass
