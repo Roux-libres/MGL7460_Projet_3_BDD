@@ -19,12 +19,13 @@ def step_impl(context):
     context.date_string = "2015-09-07"
     try:
         context.date = datetime.datetime.strptime(context.date_string, context.date_format) + datetime.timedelta(days=1)
+        context.failure = False
     except ValueError:
         print("Invalid date")
         context.failure = True
     assert context.failure is False
 
 @then('the graph is displayed')
-def step_impl(context):    
+def step_impl(context):
     result = context.application.display_asteroid(context.date_string)
     assert result is True
