@@ -50,7 +50,7 @@ class Sakado:
     def display_APOD_features(self):
         pass
 
-    def display_APOD(self, apod):
+    def display_APOD(self, apod_json):
         pass
         
     def display_favorites_APOD(self):

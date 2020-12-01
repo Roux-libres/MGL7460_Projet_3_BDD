@@ -19,11 +19,9 @@ import model.favoriteapod
 @when('the user asks to see the APOD')
 def step_impl(context):    
     url = context.application.api_queries["apod"]
-    data = context.application.fetch_data(url, {})
-    context.apod = model.favoriteapod.FavoriteAPOD()
-    context.apod.name = data.title
-    context.apod.date = data.date
-    context.apod.url = data.hdurl
+    apod_json = context.application.fetch_data(url, {})
+    assert apod_json != None
+    assert "error" not in apod_json
     
 @then('the name of the APOD is displayed')
 def step_impl(context):
@@ -32,14 +30,14 @@ def step_impl(context):
     sys.stdout = context.stdout_mock
     
     try:
-        context.application.display_APOD(context.apod)
+        context.application.display_APOD(context.apod_json)
     except webbrowser.Error as error:
         print("Error during opening of url\nError : {}".format(error))
         context.failure = True
     
     output = context.stdout_mock.getvalue()
     sys.stdout = context.real_stdout
-    assert context.apod.name == output
+    assert context.apod_json["title"] == output
     
 @then('the APOD is displayed in web browser')
 def step_impl(context):

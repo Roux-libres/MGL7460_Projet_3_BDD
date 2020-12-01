@@ -25,6 +25,7 @@ def step_impl(context):
     
     result = context.application.fetch_data(url=context.application.api_queries['earth'], parameters=parameters)
     assert result != None
+    assert "error" not in apod_json
     context.earth_url = result['url']
 
 @then('the image of the location is displayed on the web browser')
