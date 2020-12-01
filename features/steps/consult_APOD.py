@@ -6,6 +6,7 @@ import io
 import json
 import sys
 import os
+import webbrowser
 
 from behave import *
 
@@ -16,25 +17,32 @@ import model.favoriteapod
 #Given('the user is logged in')
 
 @when('the user asks to see the APOD')
-def step_impl(context):
-    context.real_stdout = sys.stdout
-    context.stdout_mock = io.StringIO()
-    sys.stdout = context.stdout_mock    
-    
+def step_impl(context):    
+    url = context.application.api_queries["apod"]
+    parameters = {"api_key": context.application.api_key}
+    data = context.application.fetch_data(url, parameters)
     context.apod = model.favoriteapod.FavoriteAPOD()
-    context.apod.name = "Cygnus Without Stars"
-    context.apod.date = "2020-11-30"
-    context.apod.url = "https://apod.nasa.gov/apod/image/2011/CygnusStarless_Cameron_8859.jpg"
+    context.apod.name = data.title
+    context.apod.date = data.date
+    context.apod.url = data.hdurl
     
 @then('the name of the APOD is displayed')
 def step_impl(context):
-    context.application.display_APOD(context.apod)
+    context.real_stdout = sys.stdout
+    context.stdout_mock = io.StringIO()
+    sys.stdout = context.stdout_mock
+    
+    try:
+        context.application.display_APOD(context.apod)
+    except webbrowser.Error as error:
+        print("Error during opening of url\nError : {}".format(error))
+        context.failure = True
+    
     output = context.stdout_mock.getvalue()
+    sys.stdout = context.real_stdout
     assert context.apod.name == output
     
 @then('the APOD is displayed in web browser')
 def step_impl(context):
-    pass
-    
-    sys.stdout = context.real_stdout
+    assert context.failure is False
     
