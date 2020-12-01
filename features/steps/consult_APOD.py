@@ -4,8 +4,8 @@
 
 import io
 import json
-import sys
 import os
+import sys
 import webbrowser
 
 from behave import *
