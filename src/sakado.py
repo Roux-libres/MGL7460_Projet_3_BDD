@@ -32,7 +32,7 @@ class Sakado:
     def display_choices(self):
         pass
 
-    def manage_query(self):
+    def display_queries(self):
         pass
 
     def fetch_data(self, url, parameters):
@@ -44,6 +44,9 @@ class Sakado:
     def display_menu(self, messages):
         pass
     
+    def open_url_in_browser(self, url):
+        pass
+    
     def display_APOD_features(self):
         pass
 
@@ -52,14 +55,20 @@ class Sakado:
         
     def display_favorites_APOD(self):
         pass
-
+    
+    def construct_web_page_APOD(self):
+        pass
+    
     def display_earth_feature(self):
+        pass
+    
+    def display_earth(self):
         pass
 
     def display_asteroid_features(self):
         pass
-
-    def display_queries(self):
+    
+    def display_asteroid(self, date_string):
         pass
 
 if __name__ == "__main__":

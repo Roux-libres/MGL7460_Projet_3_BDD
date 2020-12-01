@@ -2,8 +2,6 @@
 #pylint: disable=function-redefined
 #pylint: disable=unused-wildcard-import
 
-import webbrowser
-
 from behave import *
 
 
@@ -20,7 +18,6 @@ def step_impl(context):
     context.dimension = 0.5
     
     parameters = {
-        'api_key' : "DEMO_KEY",
         'lon': context.longitude, 
         'lat': context.latitude,
         'dim': context.dimension
@@ -32,8 +29,5 @@ def step_impl(context):
 
 @then('the image of the location is displayed on the web browser')
 def step_impl(context):
-    try:
-        webbrowser.open(context.earth_url)
-    except webbrowser.Error as error:
-        print("Error during opening of url\nError : {}".format(error))
-    assert context.failure is False
+    context.application.open_url_in_browser(context.earth_url)
+    assert context.failed is False
