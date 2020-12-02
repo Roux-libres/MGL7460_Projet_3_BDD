@@ -7,17 +7,13 @@ import sys
 
 from behave import *
 
-src_abs_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), r"..\src")
-sys.path.append(src_abs_path)
-import model.user as user
-
 
 
 @given('the user is logged in')
 def step_impl(context):
     context.username = "Bernard123"
     context.password = "Tanpis321"
-    context.user = user.User.create(username=context.username, password=context.password)
+    context.user = context.application.dao.store_user(context.username, context.password)
     context.disposable.append(context.user)
     context.application.logged_user = context.user
 
@@ -26,7 +22,7 @@ def step_impl(context):
 def step_impl(context):
     context.username = "Bernard123"
     context.password = "Tanpis321"
-    context.user = user.User.create(username=context.username, password=context.password)
+    context.user = context.application.dao.store_user(context.username, context.password)
     context.disposable.append(context.user)
 
 @when('the user logs in with his valid credentials')
@@ -78,3 +74,4 @@ def step_impl(context):
 def step_impl(context):
     assert context.failure is False
     context.application.display_menu(["Incorrect password", "Please enter a valid password"])
+    
