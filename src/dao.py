@@ -1,3 +1,5 @@
+import datetime
+import peewee
 from playhouse.sqlite_ext import SqliteExtDatabase
 
 import model
@@ -23,36 +25,51 @@ class DAO:
         self.database.create_tables(tables_list)
 
     def store_user(self, username, password):
-        user = None
-        return user
-      
-    def verify_user_credentials(self, username, password):
-        return bool
+        try:
+            user = model.user.User.create(username=username, password=password)
+            return user
+        except peewee.IntegrityError:
+            return None
     
-    def store_query(self, user, content):
-        query = None
-        return query
+    def verify_user_credentials(self, username, password):
+        try:
+            user = model.user.User.get(username=username)
+        except:
+            return False
+        
+        try:
+            user = model.user.User.get(username=username, password=password)
+            return user
+        except:
+            return True
+    
+    def store_query(self, user_id, content):
+        return model.query.Query.create(user_id=user_id, date=datetime.datetime.now(), content=content)
     
     def get_query_from_user(self, user, limit=5):
-        return list
+        return model.query.Query.select().limit(limit)
     
+    #TODO
     def store_favorite_apod(self, user, apod_json):
-        favorite_apod = None
-        return favorite_apod
+        pass
 
     def get_favorites_apod(self, user):
-        return list
+        return model.favoriteapod.FavoriteAPOD.get(user_id=user.id)
     
     def remove_favorite_apod(self, apod):
-        return bool
+        deleted_row = apod.delete_instance()
+        if deleted_row == 1:
+            return True
+        else:
+            return False
 
+    #TODO
     def store_graph(self, asteroid_json):
-        graph_asteroid = None
-        return graph_asteroid
+        pass
 
     def get_graph(self, date):
-        graph_asteroid = None
-        return graph_asteroid
+        return model.graphasteroid.GraphAsteroid.get(date=date)
 
     def get_graph_points(self, date):
-        return list
+        graph_id = self.get_graph(date).id
+        return model.graphasteroid.GraphAsteroid().get(graph_asteroid_id=graph_id)

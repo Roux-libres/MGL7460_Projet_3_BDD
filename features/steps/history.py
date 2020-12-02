@@ -13,6 +13,8 @@ from behave import *
 @when('the user wants his request history')
 def step_impl(context):
     context.number_of_query = 5
+    for index in range(context.number_of_query):
+        context.disposable.append(context.application.dao.store_query(user_id=context.user.id, content="Query number {}".format(index)))
 
 @then('the history of the last five user queries is displayed')
 def step_impl(context):
