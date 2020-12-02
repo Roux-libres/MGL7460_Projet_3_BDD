@@ -12,8 +12,9 @@ from behave import *
 
 @when('the user wants his request history')
 def step_impl(context):
-    assert True is not False
+    context.number_of_query = 5
 
 @then('the history of the last five user queries is displayed')
 def step_impl(context):
-    assert True is not False
+    context.application.display_queries()
+    assert len(context.application.dao.get_query_from_user(user=context.user, limit=context.number_of_query))
