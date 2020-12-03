@@ -8,6 +8,5 @@ from model.graphasteroid import GraphAsteroid
 class Point(BaseModel):
     id = peewee.AutoField()
     graph_asteroid_id = peewee.ForeignKeyField(GraphAsteroid)
-    x = peewee.IntegerField()
-    y = peewee.IntegerField()
+    distance = peewee.FloatField()
     radius = peewee.FloatField()
