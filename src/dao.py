@@ -1,19 +1,16 @@
 import datetime
 import peewee
-from playhouse.sqlite_ext import SqliteExtDatabase
 
 import model
+from model.user import User
 
 
 
 class DAO:
     def __init__(self, database_name):
-        self.database = SqliteExtDatabase(database_name, 
-                                              pragmas = {
-                                                  'cache_size': -1 * 64000,
-                                                  'foreign_keys': 1})
+        self.database = peewee.SqliteDatabase(database_name)
         
-        self.database.connection()
+        self.database.connect()
         
         tables_list = [
                        model.favoriteapod.FavoriteAPOD,
@@ -26,7 +23,8 @@ class DAO:
 
     def store_user(self, username, password):
         try:
-            user = model.user.User.create(username=username, password=password)
+            user = User.create(username=username, password=password)
+            print("User :", user)
             return user
         except peewee.IntegrityError:
             return None

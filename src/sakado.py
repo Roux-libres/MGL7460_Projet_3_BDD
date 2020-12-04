@@ -4,6 +4,7 @@ import math
 import os
 import requests
 import sys
+import time
 import webbrowser
 
 import matplotlib.pyplot as plt
@@ -193,7 +194,7 @@ class Sakado:
                                "Application stopping"])
             return
     
-    def display_asteroid(self, date):
+    def display_asteroid(self, date, close_after=0):
         graph = self.dao.get_graph(date)
         if graph == None:
             parameters = {
@@ -224,7 +225,15 @@ class Sakado:
         plt.figure()
         plt.scatter(graph['x'], graph['y'], graph['d'])
         plt.text(50, 50, "Earth", fontsize=14)
+        if close_after > 0: plt.ion()
         plt.show()
+        
+        if close_after > 0:
+            plt.pause(.05)
+            time.sleep(close_after)
+            plt.close()
+        
+        return True
 
 if __name__ == "__main__":
     database_name = "database.db"
