@@ -27,5 +27,5 @@ def step_impl(context):
 
 @then('the graph is displayed')
 def step_impl(context):
-    result = context.application.display_asteroid(context.date_string)
+    result = context.application.display_asteroid(context.date)
     assert result is True

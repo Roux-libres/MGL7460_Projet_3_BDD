@@ -1,8 +1,12 @@
+import datetime
 import json
+import math
 import os
 import requests
 import sys
 import webbrowser
+
+import matplotlib.pyplot as plt
 
 import dao
 import model
@@ -116,7 +120,7 @@ class Sakado:
 
     def fetch_data(self, url, parameters):
         try:
-            url += '?api_key' + self.api_key
+            url += 'api_key=' + self.api_key
             for parameter in parameters:
                 url += '&' + parameter + '=' + str(parameters[parameter])
             return requests.get(url).json()
@@ -169,11 +173,58 @@ class Sakado:
 
     #TODO
     def display_asteroid_features(self):
-        pass
+        menu = ["You have selected the Asteroid feature !",
+                "Once you have entered a date a graph representing the asteroids near Earth will be displayed"]
+        self.display_menu(menu, True)
+        
+        number_of_try = 5
+        
+        while number_of_try > 0:
+            date_string = self.get_user_input("Please enter a date with a valid format (YYYY-MM-DD) :\n")
+            try:
+                date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
+                self.display_asteroid(date)
+                break
+            except:
+                number_of_try -= 1
+        else:
+            self.display_menu(["Too many attempts",
+                               "Disconnecting user {}".format(self.logged_user.username),
+                               "Application stopping"])
+            return
     
-    #TODO
-    def display_asteroid(self, date_string):
-        pass
+    def display_asteroid(self, date):
+        graph = self.dao.get_graph(date)
+        if graph == None:
+            parameters = {
+                'start_date': date.strftime("%Y-%m-%d"),
+                'end_date': (date + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+            }
+            data = self.fetch_data(self.api_queries['asteroid'], parameters)
+            if data != None:
+                self.dao.store_graph(date, data)
+            else:
+                self.display_menu(["No data for the entered date",
+                                   "Application stopping"], True)
+                return
+        
+        graph_points = self.dao.get_graph_points(date)
+        increment = 360.0 / len(graph_points)
+        graph = {
+            'x': [0],
+            'y': [0],
+            'd': [1000]
+        }
+        
+        for index, point in enumerate(graph_points):
+            graph['x'].append(math.cos(increment * index) * (point.distance / 100000))
+            graph['y'].append(math.sin(increment * index) * (point.distance / 100000))
+            graph['d'].append(point.radius * 100)
+        
+        plt.figure()
+        plt.scatter(graph['x'], graph['y'], graph['d'])
+        plt.text(50, 50, "Earth", fontsize=14)
+        plt.show()
 
 if __name__ == "__main__":
     database_name = "database.db"

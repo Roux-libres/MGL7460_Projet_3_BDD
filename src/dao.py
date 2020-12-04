@@ -71,22 +71,30 @@ class DAO:
 
     def store_graph(self, date, asteroid_json):
         has_encountered_error = False
-        graphasteroid = model.graphasteroid.GraphAsteroid.create(date=date)
         try:
-            for asteroid in asteroid_json['near_asteroid_objects'][date.strptime('%Y-%m-%d')]:
-                model.point.create(graph_asteroid_id=graphasteroid.id,
-                                   distance=asteroid['close_approach_data']['miss_distance']['kilometers'],
-                                   radius=(asteroid['estimated_diameter']['kilometers']['estimated_diameter_min'] + asteroid['estimated_diameter']['kilometers']['estimated_diameter_max']) / 2)
+            graphasteroid = model.graphasteroid.GraphAsteroid.create(date=date.strftime('%Y-%m-%d'))
         except:
+            pass
+        
+        try:
+            for asteroid in asteroid_json['near_earth_objects'][date.strftime('%Y-%m-%d')]:
+                model.point.Point.create(graph_asteroid_id=graphasteroid.id,
+                                         distance=float(asteroid['close_approach_data'][0]['miss_distance']['kilometers']),
+                                         radius=(float(asteroid['estimated_diameter']['kilometers']['estimated_diameter_min']) + float(asteroid['estimated_diameter']['kilometers']['estimated_diameter_max'])) / 2)
+        except Exception as e:
+            print("Exception :", e)
             has_encountered_error = True
         return not has_encountered_error
 
     def get_graph(self, date):
         try:
-            return model.graphasteroid.GraphAsteroid.get(date=date)
+            return (model.graphasteroid.GraphAsteroid.select(model.graphasteroid.GraphAsteroid.id).where(model.graphasteroid.GraphAsteroid.date == date.strftime('%Y-%m-%d')))[0]
         except:
             return None
 
     def get_graph_points(self, date):
-        graph_id = self.get_graph(date).id
-        return model.graphasteroid.GraphAsteroid().get(graph_asteroid_id=graph_id)
+        try:
+            graph_id = self.get_graph(date)
+            return (model.point.Point.select(model.point.Point.distance, model.point.Point.radius).where(model.point.Point.graph_asteroid_id == graph_id))
+        except:
+            return []
