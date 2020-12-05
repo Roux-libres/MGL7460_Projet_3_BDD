@@ -214,7 +214,7 @@ class Sakado:
         graph = {
             'x': [0],
             'y': [0],
-            'd': [1000]
+            'd': [2000]
         }
         
         for index, point in enumerate(graph_points):
@@ -222,9 +222,12 @@ class Sakado:
             graph['y'].append(math.sin(increment * index) * (point.distance / 100000))
             graph['d'].append(point.radius * 100)
         
-        plt.figure()
+        plt.figure(num="Asteroids near Earth", figsize=(6, 4.5))
         plt.scatter(graph['x'], graph['y'], graph['d'])
-        plt.text(50, 50, "Earth", fontsize=14)
+        plt.text(-85, -30, "Earth", fontsize=14)
+        plt.text(350, 700, "Échelle 1:100000 km", fontsize=8)
+        plt.xlim((-750, 750))
+        plt.ylim((-750, 750))
         if close_after > 0: plt.ion()
         plt.show()
         

@@ -2,7 +2,6 @@ import datetime
 import peewee
 
 import model
-from model.user import User
 
 
 
@@ -23,8 +22,7 @@ class DAO:
 
     def store_user(self, username, password):
         try:
-            user = User.create(username=username, password=password)
-            print("User :", user)
+            user = model.user.User.create(username=username, password=password)
             return user
         except peewee.IntegrityError:
             return None
