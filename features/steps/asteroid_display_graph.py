@@ -16,7 +16,7 @@ def step_impl(context):
 @when('the user types a valid date')
 def step_impl(context):
     context.date_format = '%Y-%m-%d'
-    context.date_string = "2015-09-07"
+    context.date_string = "2020-02-20"
     try:
         context.date = datetime.datetime.strptime(context.date_string, context.date_format) + datetime.timedelta(days=1)
         context.failure = False
@@ -27,5 +27,5 @@ def step_impl(context):
 
 @then('the graph is displayed')
 def step_impl(context):
-    result = context.application.display_asteroid(context.date_string)
+    result = context.application.display_asteroid(date=context.date, close_after=5)
     assert result is True

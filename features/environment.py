@@ -13,5 +13,6 @@ def before_all(context):
 
 def after_scenario(context, scenario):
     for element in context.disposable:
-        element.delete_instance()
+        if element != None:
+            element.delete_instance()
         del element

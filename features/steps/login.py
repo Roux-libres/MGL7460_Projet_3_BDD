@@ -48,7 +48,7 @@ def step_impl(context):
 @when('the user logs in with unknown credentials')
 def step_impl(context):
     context.result_credentials = context.application.dao.verify_user_credentials(context.username, context.password)
-    if context.result_credentials == False:
+    if not context.result_credentials:
         context.failure = False
     else:
         context.failure = True
@@ -64,8 +64,9 @@ def step_impl(context):
 
 @when('the user logs in with invalid password')
 def step_impl(context):
+    context.password = "123sipnaT"
     context.result_credentials = context.application.dao.verify_user_credentials(context.username, context.password)
-    if context.result_credentials == True:
+    if context.result_credentials:
         context.failure = False
     else:
         context.failure = True
