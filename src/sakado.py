@@ -150,15 +150,75 @@ class Sakado:
     
     #TODO
     def display_APOD_features(self):
-        pass
-
-    #TODO
-    def display_APOD(self, apod_json):
-        pass
+        main_menu = ["You have selected the Astronomy Picture of the Day (APOD) feature !",
+                "Please choose one of the following functionality :",
+                "1) Display the APOD",
+                "2) Display your favorites APOD (in your browser)",
+                "3) Remove some APOD from you favorites",
+                "4) Return to main menu"]
         
-    #TODO
-    def display_favorites_APOD(self):
-        pass
+        while True:
+            self.display_menu(main_menu, True)
+            choice = self.get_user_input("Please enter a number associated with a functionality : ")
+            
+            if choice == "1":
+                self.display_APOD(self.fetch_data(self.api_queries["apod"], {}))
+            elif choice == "2":
+                self.display_favorites_APOD(self.dao.get_favorites_apod(self.logged_user))
+            elif choice == "3":
+                self.remove_favorites_APOD()
+            elif choice == "4":
+                #TODO
+                break
+            else:
+                print("Invalid choice")
+            self.get_user_input("Return to previous menu (enter)")
+
+    def display_APOD(self, apod_json):
+        print("APOD title :", apod_json["title"])
+        self.open_url_in_browser(apod_json["hdurl"])
+        
+        while True:
+            choice = self.get_user_input("Do you want to add the APOD to your favorites ? (y/n) : ")
+            
+            if choice == "y":
+                self.dao.store_favorite_apod(self.logged_user, apod_json)
+                break
+            elif choice == "n":
+                break
+            else:
+                print("Invalide choice (y or n)")
+      
+    def display_favorites_APOD(self, fav_apods):        
+        if len(fav_apods) != 0 :
+            fav_apods_names = [str(i) + " : " + apod.name for i, apod in enumerate(fav_apods)]
+            menu = ["There is the list of your favorites APOD :"]
+            menu.extend(fav_apods_names)
+            self.display_menu(menu, True)
+        else:
+            self.display_menu(["You haven't any favorite APOD"], True)
+    
+    def remove_favorites_APOD(self):
+        while True:
+            favs_apods = self.dao.get_favorites_apod(self.logged_user)
+            self.display_favorites_APOD(favs_apods)
+        
+            try:
+                apod_id = self.get_user_input("Which one do you want to remove ? (enter its number or nothing to go back to previous menu) : ")
+                
+                if apod_id == "":
+                    break
+                else:
+                    apod_id = int(apod_id)
+                    
+                if apod_id in range(len(favs_apods)):
+                    if self.get_user_input("Are you sure you want to remove the APOD number {0} ? (y or n) : ".format(apod_id)) == "y":
+                        self.dao.remove_favorite_apod(favs_apods[apod_id])
+                        self.get_user_input("The APOD number {0} has been removed".format(apod_id))
+                else:
+                    self.get_user_input("Invalide choice")              
+            except ValueError:
+                self.get_user_input("Invalide choice")                   
     
     #TODO
     def construct_web_page_APOD(self):
@@ -172,7 +232,6 @@ class Sakado:
     def display_earth(self):
         pass
 
-    #TODO
     def display_asteroid_features(self):
         menu = ["You have selected the Asteroid feature !",
                 "Once you have entered a date a graph representing the asteroids near Earth will be displayed"]

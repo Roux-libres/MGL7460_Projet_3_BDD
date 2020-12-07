@@ -50,13 +50,10 @@ class DAO:
     
     #TODO
     def store_favorite_apod(self, user, apod_json):
-        pass
+        return model.favoriteapod.FavoriteAPOD.create(user_id=user.id, name=apod_json["title"], date=apod_json["date"], url=apod_json["hdurl"])
 
     def get_favorites_apod(self, user):
-        try:
-            return model.favoriteapod.FavoriteAPOD.get(user_id=user.id)
-        except:
-            return None
+        return model.favoriteapod.FavoriteAPOD.select().where(model.favoriteapod.FavoriteAPOD.user_id ==user.id)
     
     def remove_favorite_apod(self, apod):
         deleted_row = apod.delete_instance()
