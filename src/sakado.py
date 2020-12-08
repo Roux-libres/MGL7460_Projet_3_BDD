@@ -80,41 +80,37 @@ class Sakado:
             self.display_menu(["There is not account associated with this username"])
 
     def display_choices(self):
-        menu = ["Welcome {} to the Sakado program".format(self.logged_user.username),
-                "This program use the NASA's API (https://api.nasa.gov)",
-                "Please choose one of the following functionality :",
-                "1) Display APOD functionalities",
-                "2) Display Earth functionalities",
-                "3) Display Asteroid functionalities",
-                "4) Display your previous queries"]
-        self.display_menu(menu, True)
+        invalid_choice = False
         
-        number_of_try = 5
+        while True:
+            menu = ["Welcome {} to the Sakado program".format(self.logged_user.username),
+                    "This program use the NASA's API (https://api.nasa.gov)",
+                    "Please choose one of the following functionality :",
+                    "1) Display APOD functionalities",
+                    "2) Display Earth functionalities",
+                    "3) Display Asteroid functionalities",
+                    "4) Display your previous queries",
+                    "5) Exit the program"]
+            
+            if invalid_choice:
+                menu.append("\nInvalid choice")
+                invalid_choice = False
+                
+            self.display_menu(menu, True)
         
-        while number_of_try > 0:
             choice = self.get_user_input("Please enter a number associated with a functionality : ")
             if choice == "1":
                 self.display_APOD_features()
-                break
             elif choice == "2":
                 self.display_earth_feature()
-                break
             elif choice == "3":
                 self.display_asteroid_features()
-                break
             elif choice == "4":
                 self.display_queries()
+            elif choice == "5":
                 break
             else:
-                self.display_menu(["Invalid choice",
-                                   "{} attempt(s) remaining".format(number_of_try)])
-            
-        if number_of_try == 0:
-            self.display_menu(["Too many attempts",
-                               "Disconnecting user {}".format(self.logged_user.username),
-                               "Application stopping"])
-            return
-
+                invalid_choice = True
     #TODO
     def display_queries(self):
         pass
@@ -233,25 +229,20 @@ class Sakado:
         pass
 
     def display_asteroid_features(self):
-        menu = ["You have selected the Asteroid feature !",
-                "Once you have entered a date a graph representing the asteroids near Earth will be displayed"]
+        menu = ["You have selected the Asteroid feature !"]
         self.display_menu(menu, True)
         
-        number_of_try = 5
-        
-        while number_of_try > 0:
-            date_string = self.get_user_input("Please enter a date with a valid format (YYYY-MM-DD) :\n")
-            try:
-                date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
-                self.display_asteroid(date)
+        while True:
+            date_string = self.get_user_input("Please enter a date with the format YYYY-MM-DD or press enter to return to the main menu :\n")
+            if date_string == "":
                 break
-            except:
-                number_of_try -= 1
-        else:
-            self.display_menu(["Too many attempts",
-                               "Disconnecting user {}".format(self.logged_user.username),
-                               "Application stopping"])
-            return
+            else:
+                try:
+                    date = datetime.datetime.strptime(date_string, "%Y-%m-%d")
+                    self.display_asteroid(date)
+                    break
+                except:
+                    self.display_menu(["Invalid date format...", "Format is (YYYY-MM-DD)"])
     
     def display_asteroid(self, date, close_after=0):
         graph = self.dao.get_graph(date)
