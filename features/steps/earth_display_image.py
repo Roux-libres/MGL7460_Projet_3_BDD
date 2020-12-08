@@ -3,8 +3,7 @@
 #pylint: disable=unused-wildcard-import
 
 from behave import *
-
-
+import webbrowser
 
 #SCENARIO: A user wants a 2D graph to be displayed
 @given('the user wants the Earth image of a location')
@@ -13,19 +12,19 @@ def step_impl(context):
 
 @when('the user types valid coordinates')
 def step_impl(context):
-    context.longitude = 45.512561
-    context.latitude = -73.560608
-    context.dimension = 0.5
+    context.longitude = -95.33
+    context.latitude = 29.78    
+    context.dimension = 0.4
     
     parameters = {
         'lon': context.longitude, 
         'lat': context.latitude,
-        'dim': context.dimension
+        'dim': context.dimension,
+        'date': "2018-01-01"
     }
     
     result = context.application.fetch_data(url=context.application.api_queries['earth'], parameters=parameters)
     assert result != None
-    assert "error" not in apod_json
     context.earth_url = result['url']
 
 @then('the image of the location is displayed on the web browser')

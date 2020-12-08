@@ -42,7 +42,7 @@ class DAO:
     def store_query(self, user_id, content):
         return model.query.Query.create(user_id=user_id, date=datetime.datetime.now(), content=content)
     
-    def get_query_from_user(self, user, limit=5):
+    def get_queries_from_user(self, user, limit=5):
         try:
             return model.query.Query.select().limit(limit)
         except:
