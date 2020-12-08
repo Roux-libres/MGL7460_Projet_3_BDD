@@ -21,7 +21,7 @@ class Sakado:
         self.api_queries = {
             "apod"      : "https://api.nasa.gov/planetary/apod?",
             "asteroid"  : "https://api.nasa.gov/neo/rest/v1/feed?",
-            "earth"     : "https://api.nasa.gov/planetary/earth/imagery?"
+            "earth"     : "https://api.nasa.gov/planetary/earth/assets?"
         }
         self.dao = dao.DAO(os.path.join(database_path, database_name))
 
@@ -117,13 +117,22 @@ class Sakado:
 
     #TODO
     def display_queries(self):
-        pass
-
+        queries = self.dao.get_queries_from_user(self.logged_user)
+        if len(queries) != 0 :
+            queries_list = [str(i) + " : " + query.content for i, query in enumerate(queries)]
+            menu = ["There is the list of your old queries :"]
+            menu.extend(queries_list)
+            self.display_menu(menu, True)
+        else:
+            self.display_menu(["You haven't old queries"], True)
+        self.get_user_input("Return to previous menu (enter)")
+      
     def fetch_data(self, url, parameters):
         try:
             url += 'api_key=' + self.api_key
             for parameter in parameters:
                 url += '&' + parameter + '=' + str(parameters[parameter])
+            self.dao.store_query(self.logged_user.id, url)
             return requests.get(url).json()
         except:
             return None
@@ -148,7 +157,6 @@ class Sakado:
         except:
             self.display_menu(["An error occurred during the opening of the URL"])
     
-    #TODO
     def display_APOD_features(self):
         main_menu = ["You have selected the Astronomy Picture of the Day (APOD) feature !",
                 "Please choose one of the following functionality :",
@@ -164,7 +172,7 @@ class Sakado:
             if choice == "1":
                 self.display_APOD(self.fetch_data(self.api_queries["apod"], {}))
             elif choice == "2":
-                self.display_favorites_APOD(self.dao.get_favorites_apod(self.logged_user))
+                self.manage_display_favorites_APOD()
             elif choice == "3":
                 self.remove_favorites_APOD()
             elif choice == "4":
@@ -198,6 +206,28 @@ class Sakado:
         else:
             self.display_menu(["You haven't any favorite APOD"], True)
     
+    def manage_display_favorites_APOD(self):        
+        favs_apods = self.dao.get_favorites_apod(self.logged_user)
+        if len(favs_apods) != 0 :
+            while True:
+                self.display_favorites_APOD(favs_apods)
+            
+                try:
+                    apod_id = self.get_user_input("Which one do you want to display ? (enter its number or nothing to go back to previous menu) : ")
+                    
+                    if apod_id == "":
+                        break
+                    else:
+                        apod_id = int(apod_id)
+                        
+                    if apod_id in range(len(favs_apods)):
+                        self.open_url_in_browser(favs_apods[apod_id].url)
+         
+                except ValueError:
+                    self.get_user_input("Invalide choice")             
+        else:
+            self.display_menu(["You haven't any favorite APOD"], True)
+
     def remove_favorites_APOD(self):
         while True:
             favs_apods = self.dao.get_favorites_apod(self.logged_user)
@@ -220,17 +250,50 @@ class Sakado:
             except ValueError:
                 self.get_user_input("Invalide choice")                   
     
-    #TODO
-    def construct_web_page_APOD(self):
-        pass
-    
-    #TODO
     def display_earth_feature(self):
-        pass
+        main_menu = ["You have selected the Earth feature !",
+        "Please choose one of the following functionality :",
+        "1) Display a satellite image of the earth with specific coordinates",
+        "2) Return to main menu"]
+
+        while True:
+            self.display_menu(main_menu, True)
+            choice = self.get_user_input("Please enter a number associated with a functionality : ")
+            
+            if choice == "1":
+                self.display_earth()
+            elif choice == "2":
+                break
+            else:
+                print("Invalid choice")
+            self.get_user_input("Return to previous menu (enter)")
     
-    #TODO
+    def check_float_to_input(self, message):
+        input = self.get_user_input(message)
+        while 1:
+            try:
+                input = float(input)
+                break
+            except:
+                print("Please enter a correct float value.")
+                input = self.get_user_input(message)
+        return input       
+
     def display_earth(self):
-        pass
+        latitude = self.check_float_to_input("Enter the latitude (float value): ")
+        longitude = self.check_float_to_input("Enter the longitude (float value): ")
+        dimension = self.check_float_to_input("Enter the dimension - width and height of image in degrees - (float value): ")
+        parameters = {
+            'lat': latitude,
+            'lon': longitude,
+            'dim' : dimension,
+            'date' : "2018-01-01"
+        }
+        data = self.fetch_data(self.api_queries["earth"], parameters)
+        try:
+            self.open_url_in_browser(data.url)
+        except:
+            print("No imagery for these coords.")
 
     def display_asteroid_features(self):
         menu = ["You have selected the Asteroid feature !",
