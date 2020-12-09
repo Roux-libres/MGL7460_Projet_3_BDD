@@ -16,13 +16,3 @@ Feature: Manage favorites Nasa Astrology Picture Of the Day - APOD
         Given the user has favorites APOD
          When the user selects and chooses to remove an APOD from his favorites
          Then the APOD is removed from the favorites list
-
-    Scenario: Display a user's favorite APOD in web browser
-        Given the user has favorites APOD
-         When the user chooses one APOD to display
-         Then the APOD opens in web browser
-    
-    Scenario: Open a user's favorites APOD page in web browser
-        Given the user has favorites APOD
-         When the user chooses to display all his favorites APOD
-         Then a page displaying all APOD and their names opens in web browser

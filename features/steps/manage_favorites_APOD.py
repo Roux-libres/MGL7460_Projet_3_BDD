@@ -8,10 +8,6 @@ import io
 
 from behave import *
 
-src_abs_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), r"..\..\src")
-sys.path.append(src_abs_path)
-import model.favoriteapod
-
 
 
 #SCENARIO: A user adds the APOD to his favorites
@@ -35,12 +31,12 @@ def step_impl(context):
 def step_impl(context): 
     context.favorite_apod = context.application.dao.store_favorite_apod(context.user, context.apod_json)
     context.disposable.append(context.favorite_apod)
-    assert isinstance(context.favorite_apod, model.favoriteapod.FavoriteApod)
+    assert context.favorite_apod != None
 
 #SCENARIO: A user lists favorites APOD
 @when('the user asks to see his favorites APOD')
 def step_impl(context):
-    context.fav_apods_test = context.application.dao.get_favorites_apod(context.user)
+    context.favorites_apod = context.application.dao.get_favorites_apod(context.user)
 
 @then("user's favorites APOD names are listed")
 def step_impl(context):
@@ -48,16 +44,13 @@ def step_impl(context):
     context.stdout_mock = io.StringIO()
     sys.stdout = context.stdout_mock
 
-    context.application.display_favorites_APOD(context.fav_apods_test)
+    context.application.display_favorites_APOD(context.favorites_apod)
 
     output = context.stdout_mock.getvalue()
     sys.stdout = context.real_stdout
-    if (len(context.fav_apods_test) > 0):
-        for fav_apod_test in context.fav_apods_test:
-            assert fav_apod_test["title"] in output
-    else:
-        assert "You haven't any favorite APOD" in output
     
+    for favorite_apod in context.favorites_apod:
+        assert favorite_apod.title in output
 
 #SCENARIO: A user remove a APOD from favorites
 @given('the user has favorites APOD')
@@ -77,37 +70,9 @@ def step_impl(context):
     
 @when('the user selects and chooses to remove an APOD from his favorites')
 def step_impl(context):
-    context.favorite_apod_to_remove = context.application.dao.get_favorites_apod(context.application.logged_user)[-1]
+    pass
 
 @then('the APOD is removed from the favorites list')
 def step_impl(context):
-    result_delete = context.application.dao.remove_favorite_apod(context.favorite_apod_to_remove)
+    result_delete = context.application.dao.remove_favorite_apod(context.favorite_apod)
     assert result_delete is True
-    
-
-#SCENARIO: Display a user's favorite APOD in web browser
-
-#Given('the user has favorites APOD')
-    
-@when('the user chooses one APOD to display')
-def step_impl(context):
-    assert True is not False
-    
-
-@then('the APOD opens in web browser')
-def step_impl(context):
-    assert False is False
-    
-
-#SCENARIO: Open a user's favorites APOD page in web browser
-
-#Given('the user has favorites APOD')
-    
-@when('the user chooses to display all his favorites APOD')
-def step_impl(context):
-    assert True is not False
-    
-
-@then('a page displaying all APOD and their names opens in web browser')
-def step_impl(context):
-    assert False is False

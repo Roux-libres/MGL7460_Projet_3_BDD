@@ -133,7 +133,8 @@ class Sakado:
                 url += '&' + parameter + '=' + str(parameters[parameter])
             self.dao.store_query(self.logged_user.id, url)
             return requests.get(url).json()
-        except:
+        except Exception as error:
+            print(error)
             return None
 
     def get_user_input(self, message):
@@ -240,7 +241,7 @@ class Sakado:
                 except ValueError:
                     self.get_user_input("Invalide choice")             
         else:
-            self.display_menu(["You haven't any favorite APOD"], True)
+            self.display_menu(["You have no favorite APOD"], True)
 
     def remove_favorites_APOD(self):
             while True:
