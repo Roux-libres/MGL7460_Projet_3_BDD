@@ -115,14 +115,17 @@ class Sakado:
     def display_queries(self):
         queries = self.dao.get_queries_from_user(self.logged_user)
         if len(queries) != 0 :
-            queries_list = [str(i) + " : " + query.content for i, query in enumerate(queries)]
             menu = ["There is the list of your old queries :"]
-            menu.extend(queries_list)
             self.display_menu(menu, True)
+            self.display_queries_in_prompt(queries)
         else:
             self.display_menu(["You haven't old queries"], True)
         self.get_user_input("Return to previous menu (enter)")
-      
+    
+    def display_queries_in_prompt(self, queries):
+        queries_list = [str(i) + " : " + query.content for i, query in enumerate(queries)]
+        self.display_menu(queries_list)
+        
     def fetch_data(self, url, parameters):
         try:
             url += 'api_key=' + self.api_key
@@ -137,11 +140,10 @@ class Sakado:
         return input(message)
 
     def clear_console(self):
-        print("\n" * 50) 
-        '''if os.name == 'nt':
+        if os.name == 'nt':
             _ = os.system('cls')
         else:
-            _ = os.system('clear')'''
+            _ = os.system('clear')
     
     def display_menu(self, messages, erase=False):
         if erase: self.clear_console()
@@ -149,10 +151,15 @@ class Sakado:
             print(message)
     
     def open_url_in_browser(self, url):
+        worked = False
         try:
             webbrowser.open(url)
+            worked = True
         except:
             self.display_menu(["An error occurred during the opening of the URL"])
+            worked = False
+        
+        return worked
     
     def display_APOD_features(self):
         main_menu = ["You have selected the Astronomy Picture of the Day (APOD) feature !",
@@ -167,25 +174,36 @@ class Sakado:
             choice = self.get_user_input("Please enter a number associated with a functionality : ")
             
             if choice == "1":
-                self.display_APOD(self.fetch_data(self.api_queries["apod"], {}))
+                apod_json = self.fetch_data(self.api_queries["apod"], {})
+                self.display_APOD(apod_json)
+                self.add_APOD_to_favorite(apod_json)
             elif choice == "2":
                 self.manage_display_favorites_APOD()
             elif choice == "3":
                 self.remove_favorites_APOD()
             elif choice == "4":
-                #TODO
                 break
             else:
                 print("Invalid choice")
             self.get_user_input("Return to previous menu (enter)")
 
     def display_APOD(self, apod_json):
+        self.display_APOD_in_prompt(apod_json)
+        self.display_APOD_in_browser(apod_json)
+    
+    def display_APOD_in_prompt(self, apod_json):
         print("APOD title :", apod_json["title"])
-        if "hdurl" in apod_json:
-            self.open_url_in_browser(apod_json["hdurl"])
-        else: 
-            self.open_url_in_browser(apod_json["url"])
         
+    def display_APOD_in_browser(self, apod_json):
+        url = ""
+        if "hdurl" in apod_json:
+            url = apod_json["hdurl"]
+        else:
+            url = apod_json['url']
+   
+        return self.open_url_in_browser(url)
+    
+    def add_APOD_to_favorite(self, apod_json):
         while True:
             choice = self.get_user_input("Do you want to add the APOD to your favorites ? (y/n) : ")
             
@@ -197,19 +215,15 @@ class Sakado:
             else:
                 print("Invalide choice (y or n)")
       
-    def display_favorites_APOD(self, fav_apods):        
-        if len(fav_apods) != 0 :
+    def display_favorites_APOD(self, fav_apods):
             fav_apods_names = [str(i) + " : " + apod.name for i, apod in enumerate(fav_apods)]
-            menu = ["There is the list of your favorites APOD :"]
-            menu.extend(fav_apods_names)
-            self.display_menu(menu, True)
-        else:
-            self.display_menu(["You haven't any favorite APOD"], True)
+            self.display_menu(fav_apods_names)
     
     def manage_display_favorites_APOD(self):        
         favs_apods = self.dao.get_favorites_apod(self.logged_user)
         if len(favs_apods) != 0 :
             while True:
+                self.display_menu(["There is the list of your favorites APOD :"], True)
                 self.display_favorites_APOD(favs_apods)
             
                 try:
@@ -229,26 +243,32 @@ class Sakado:
             self.display_menu(["You haven't any favorite APOD"], True)
 
     def remove_favorites_APOD(self):
-        while True:
-            favs_apods = self.dao.get_favorites_apod(self.logged_user)
-            self.display_favorites_APOD(favs_apods)
-        
-            try:
-                apod_id = self.get_user_input("Which one do you want to remove ? (enter its number or nothing to go back to previous menu) : ")
+            while True:
+                favs_apods = self.dao.get_favorites_apod(self.logged_user)
                 
-                if apod_id == "":
-                    break
+                if len(favs_apods) != 0:
+                    self.display_menu(["There is the list of your favorites APOD :"], True)
+                    self.display_favorites_APOD(favs_apods)
+                
+                    try:
+                        apod_id = self.get_user_input("Which one do you want to remove ? (enter its number or nothing to go back to previous menu) : ")
+                        
+                        if apod_id == "":
+                            break
+                        else:
+                            apod_id = int(apod_id)
+                            
+                        if apod_id in range(len(favs_apods)):
+                            if self.get_user_input("Are you sure you want to remove the APOD number {0} ? (y or n) : ".format(apod_id)) == "y":
+                                self.dao.remove_favorite_apod(favs_apods[apod_id])
+                                self.get_user_input("The APOD number {0} has been removed".format(apod_id))
+                        else:
+                            self.get_user_input("Invalide choice")              
+                    except ValueError:
+                        self.get_user_input("Invalide choice")        
                 else:
-                    apod_id = int(apod_id)
-                    
-                if apod_id in range(len(favs_apods)):
-                    if self.get_user_input("Are you sure you want to remove the APOD number {0} ? (y or n) : ".format(apod_id)) == "y":
-                        self.dao.remove_favorite_apod(favs_apods[apod_id])
-                        self.get_user_input("The APOD number {0} has been removed".format(apod_id))
-                else:
-                    self.get_user_input("Invalide choice")              
-            except ValueError:
-                self.get_user_input("Invalide choice")                   
+                    self.display_menu(["You haven't any favorite APOD"], True)
+                    break           
     
     def display_earth_feature(self):
         main_menu = ["You have selected the Earth feature !",
