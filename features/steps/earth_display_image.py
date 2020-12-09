@@ -13,7 +13,7 @@ def step_impl(context):
 @when('the user types valid coordinates')
 def step_impl(context):
     context.longitude = -95.33
-    context.latitude = 29.78    
+    context.latitude = 29.78
     context.dimension = 0.4
     
     parameters = {
@@ -29,10 +29,5 @@ def step_impl(context):
 
 @then('the image of the location is displayed on the web browser')
 def step_impl(context):
-    try:
-        context.application.open_url_in_browser(context.earth_url)
-        context.failure = False
-    except webbrowser.Error as error:
-        print("Error during opening of url\nError : {}".format(error))
-        context.failure = True
-    assert context.failure is False 
+    context.result_open = context.application.open_url_in_browser(context.earth_url)
+    assert context.result_open is True
