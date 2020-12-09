@@ -31,7 +31,8 @@ def step_impl(context):
 def step_impl(context):
     try:
         context.application.open_url_in_browser(context.earth_url)
+        context.failure = False
     except webbrowser.Error as error:
         print("Error during opening of url\nError : {}".format(error))
         context.failure = True
-    assert context.failure is False
+    assert context.failure is False 
