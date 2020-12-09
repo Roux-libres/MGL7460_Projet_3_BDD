@@ -8,6 +8,7 @@ import os
 import sys
 
 
+
 #SCENARIO: A user wants their last five queries to be displayed
 
 #Given('the user is logged in')
@@ -20,14 +21,13 @@ def step_impl(context):
         context.queries.append(context.application.dao.store_query(user_id=context.user.id, content="Query number {}".format(index)))
         context.disposable.append(context.application.dao.store_query(user_id=context.user.id, content="Query number {}".format(index)))
 
-'''
 @then('the history of the last five user queries is displayed')
 def step_impl(context):
     context.real_stdout = sys.stdout
     context.stdout_mock = io.StringIO()
     sys.stdout = context.stdout_mock
     
-    context.application.display_queries()
+    context.application.display_queries_in_prompt()
 
     output = context.stdout_mock.getvalue()
     sys.stdout = context.real_stdout
@@ -37,5 +37,3 @@ def step_impl(context):
             assert query["content"] in output
     else:
         assert "You haven't old queries" in output
-    
-'''

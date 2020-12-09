@@ -13,6 +13,7 @@ sys.path.append(src_abs_path)
 import model.favoriteapod
 
 
+
 #SCENARIO: A user adds the APOD to his favorites
 @given('the APOD has been fetched')
 def step_impl(context):
@@ -28,16 +29,13 @@ def step_impl(context):
 
 @when('the user chooses to add the APOD to favorites')
 def step_impl(context):
-    context.apod_test = context.application.dao.store_favorite_apod(context.user, context.apod_json)
-    context.disposable.append(context.apod_test)
-    assert context.apod_test is not None
-    
+    pass
 
 @then('the APOD is added to favorites')
 def step_impl(context): 
-    context.fav_apods_test = context.application.dao.get_favorites_apod(context.user)
-    assert context.fav_apods_test[-1] == context.apod_test
-
+    context.favorite_apod = context.application.dao.store_favorite_apod(context.user, context.apod_json)
+    context.disposable.append(context.favorite_apod)
+    assert isinstance(context.favorite_apod, model.favoriteapod.FavoriteApod)
 
 #SCENARIO: A user lists favorites APOD
 @when('the user asks to see his favorites APOD')
@@ -64,7 +62,6 @@ def step_impl(context):
 #SCENARIO: A user remove a APOD from favorites
 @given('the user has favorites APOD')
 def step_impl(context):
-    
     context.apod_json = {
         "date": "2020-12-01",
         "explanation": "Are stars still forming in the Milky Way's satellite galaxies?  Found among the Small Magellanic Cloud's (SMC's) clusters and nebulas, NGC 346 is a star forming region about 200 light-years across, pictured here in the center of a Hubble Space Telescope image. A satellite galaxy of the Milky Way, the Small Magellanic Cloud (SMC) is a wonder of the southern sky, a mere 210,000 light-years distant in the constellation of the Toucan (Tucana). Exploring NGC 346, astronomers have identified a population of embryonic stars strung along the dark, intersecting dust lanes visible here on the right. Still collapsing within their natal clouds, the stellar infants' light is reddened by the intervening dust. Toward the top of the frame is another star cluster with intrinsically older and redder stars. A small, irregular galaxy, the SMC itself represents a type of galaxy more common in the early Universe. These small galaxies, though, are thought to be building blocks for the larger galaxies present today.   All 30: 2020 November APODs voiced by AI",
@@ -75,30 +72,17 @@ def step_impl(context):
         "url": "https://apod.nasa.gov/apod/image/2012/Ngc346_HubbleSchmidt_960.jpg"
     }
 
-    context.apod_test = context.application.dao.store_favorite_apod(context.user, context.apod_json)
-    context.disposable.append(context.apod_test)
+    context.favorite_apod = context.application.dao.store_favorite_apod(context.user, context.apod_json)
+    context.disposable.append(context.favorite_apod)
     
-'''
 @when('the user selects and chooses to remove an APOD from his favorites')
 def step_impl(context):
-    
-    context.fav_apods_test = context.application.dao.get_favorites_apod(context.application.logged_user)
-    context.last_apod_test = context.fav_apods_test[-1]
-    
-    context.real_stdout = sys.stdout
-    context.stdout_mock = io.StringIO()
-
-    context.application.remove_favorites_APOD()
-    context.stdout_mock += StringIO("0\n")
-    
- '''
+    context.favorite_apod_to_remove = context.application.dao.get_favorites_apod(context.application.logged_user)[-1]
 
 @then('the APOD is removed from the favorites list')
 def step_impl(context):
-    
-    context.dao.remove_favorite_apod()
-    context.fav_apods_test_without_last_apod = context.application.dao.get_favorites_apod(context.user)
-    assert context.fav_apods_test[:-1] is context.fav_apods_test_without_last_apod
+    result_delete = context.application.dao.remove_favorite_apod(context.favorite_apod_to_remove)
+    assert result_delete is True
     
 
 #SCENARIO: Display a user's favorite APOD in web browser
