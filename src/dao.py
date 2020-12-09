@@ -44,15 +44,18 @@ class DAO:
     
     def get_queries_from_user(self, user, limit=5):
         try:
-            return model.query.Query.select().limit(limit)
+            return model.query.Query.select().where(model.query.Query.user_id==user.id).limit(limit)
         except:
             return []
     
     def store_favorite_apod(self, user, apod_json):
+        url = ""
         if "hdurl" in apod_json:
-            return model.favoriteapod.FavoriteAPOD.create(user_id=user.id, name=apod_json["title"], date=apod_json["date"], url=apod_json["hdurl"])
+            url = apod_json["hdurl"]
         else:
-            return model.favoriteapod.FavoriteAPOD.create(user_id=user.id, name=apod_json["title"], date=apod_json["date"], url=apod_json["url"])
+            url = apod_json['url']
+        
+        return model.favoriteapod.FavoriteAPOD.create(user_id=user.id, name=apod_json["title"], date=apod_json["date"], url=url)
 
     def get_favorites_apod(self, user):
         return model.favoriteapod.FavoriteAPOD.select().where(model.favoriteapod.FavoriteAPOD.user_id ==user.id)
