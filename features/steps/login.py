@@ -16,6 +16,7 @@ def step_impl(context):
     context.user = context.application.dao.store_user(context.username, context.password)
     context.disposable.append(context.user)
     context.application.logged_user = context.user
+    context.test_bool = True
 
 #SCENARIO: A user try to log in
 @given('the user has an account registered')

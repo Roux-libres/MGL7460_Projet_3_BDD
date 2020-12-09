@@ -111,7 +111,7 @@ class Sakado:
                 break
             else:
                 invalid_choice = True
-    #TODO
+
     def display_queries(self):
         queries = self.dao.get_queries_from_user(self.logged_user)
         if len(queries) != 0 :
@@ -137,10 +137,11 @@ class Sakado:
         return input(message)
 
     def clear_console(self):
-        if os.name == 'nt':
+        print("\n" * 50) 
+        '''if os.name == 'nt':
             _ = os.system('cls')
         else:
-            _ = os.system('clear')
+            _ = os.system('clear')'''
     
     def display_menu(self, messages, erase=False):
         if erase: self.clear_console()
@@ -180,7 +181,10 @@ class Sakado:
 
     def display_APOD(self, apod_json):
         print("APOD title :", apod_json["title"])
-        self.open_url_in_browser(apod_json["hdurl"])
+        if "hdurl" in apod_json:
+            self.open_url_in_browser(apod_json["hdurl"])
+        else: 
+            self.open_url_in_browser(apod_json["url"])
         
         while True:
             choice = self.get_user_input("Do you want to add the APOD to your favorites ? (y/n) : ")

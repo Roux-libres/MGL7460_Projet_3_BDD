@@ -48,9 +48,11 @@ class DAO:
         except:
             return []
     
-    #TODO
     def store_favorite_apod(self, user, apod_json):
-        return model.favoriteapod.FavoriteAPOD.create(user_id=user.id, name=apod_json["title"], date=apod_json["date"], url=apod_json["hdurl"])
+        if "hdurl" in apod_json:
+            return model.favoriteapod.FavoriteAPOD.create(user_id=user.id, name=apod_json["title"], date=apod_json["date"], url=apod_json["hdurl"])
+        else:
+            return model.favoriteapod.FavoriteAPOD.create(user_id=user.id, name=apod_json["title"], date=apod_json["date"], url=apod_json["url"])
 
     def get_favorites_apod(self, user):
         return model.favoriteapod.FavoriteAPOD.select().where(model.favoriteapod.FavoriteAPOD.user_id ==user.id)
