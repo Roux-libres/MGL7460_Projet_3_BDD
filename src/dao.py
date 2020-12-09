@@ -44,7 +44,7 @@ class DAO:
     
     def get_queries_from_user(self, user, limit=5):
         try:
-            return model.query.Query.select().limit(limit)
+            return model.query.Query.select().where(model.query.Query.user_id==user.id).limit(limit)
         except:
             return []
     

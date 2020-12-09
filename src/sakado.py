@@ -115,14 +115,17 @@ class Sakado:
     def display_queries(self):
         queries = self.dao.get_queries_from_user(self.logged_user)
         if len(queries) != 0 :
-            queries_list = [str(i) + " : " + query.content for i, query in enumerate(queries)]
             menu = ["There is the list of your old queries :"]
-            menu.extend(queries_list)
             self.display_menu(menu, True)
+            self.display_queries_in_prompt(queries)
         else:
             self.display_menu(["You haven't old queries"], True)
         self.get_user_input("Return to previous menu (enter)")
-      
+    
+    def display_queries_in_prompt(self, queries):
+        queries_list = [str(i) + " : " + query.content for i, query in enumerate(queries)]
+        self.display_menu(queries_list)
+        
     def fetch_data(self, url, parameters):
         try:
             url += 'api_key=' + self.api_key
@@ -137,11 +140,10 @@ class Sakado:
         return input(message)
 
     def clear_console(self):
-        print("\n" * 50) 
-        '''if os.name == 'nt':
+        if os.name == 'nt':
             _ = os.system('cls')
         else:
-            _ = os.system('clear')'''
+            _ = os.system('clear')
     
     def display_menu(self, messages, erase=False):
         if erase: self.clear_console()
